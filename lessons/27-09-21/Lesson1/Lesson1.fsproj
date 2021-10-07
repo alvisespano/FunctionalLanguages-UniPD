@@ -7,6 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Program.fs" />
+    <Compile Include="Main.fs" />
   </ItemGroup>
 </Project>
