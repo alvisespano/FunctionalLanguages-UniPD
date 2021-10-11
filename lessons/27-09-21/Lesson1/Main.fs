@@ -15,16 +15,83 @@ let map_pair (f, x, y) = (f x, f y)
 public static <T> T ident2(T x) { return x; }*)
 let identity x = x  // identity : 'a -> 'a
 
-// map : f:('a -> 'b) * l:'a list -> 'b list
-let rec map (f, l) =
+// map : f:('a -> 'b) -> l:'a list -> 'b list
+let rec map f l = // fun f -> fun l -> ...
     match l with
     | [] -> []
-    | x :: xs -> f x :: map (f, xs)
+    | x :: xs -> f x :: map f xs
 
-let test_map () =
+// iter : ('a -> unit) -> 'a list -> unit
+let rec iter =
+    fun f ->
+        fun l -> 
+            match l with
+            | [] -> ()
+            | x :: xs -> f x; iter f xs
+
+// void printf(const char* fmt, ...)
+(*
+printf("ciao i have %d years and %d months", 8, "pippo", true);
+*)
+
+
+let prova () =
+    let g = iter (fun x -> printf "%d" x)
+    g [1; 2; 3]
+    g [5; 6]
+    let p = printf "ciao i have %d years and my name is %s"
+    p 7 "alvise"
+
+let prova2 () =
+    let m1 = map (printf "%d")
+    m1 [1; 2; 3] 
+
+let app2 f x y = f x y
+
+let prova3 () =
+    let n = app2 (+) 2 3
+    let m = app2 (/) 20 2
+    let plus = app2 (+)
+    let r1 = plus 7 8
+    let m1 = app2 map ((+) 1) [1; 2; 3]
+    ()
+
+let rec sum (+) zero l =
+    match l with
+    | [] -> zero
+    | x :: xs -> x + sum (+) zero xs
+
+let currify f (a, b) = f a b
+let uncurrify f a b = f (a, b)
+
+let add x y = x + y
+let u = add 7
+
+let test_map1 () =
     let l1 = ["ciao"; "my"; "name"; "is"; "alvise"]
-    let r1 = map ((fun (s : string) -> s.Length), l1)
+    let f1 = fun (s : string) -> s.Length
+    let f2 (s : string) = s.Length
+    let r1 = map f1 l1
     printf "l1 = %O\nr1 = %O\n" l1 r1
+
+let test_map2 () =
+    let l1 = [1.2; 23.45; 56.78]
+    let r1 = map (fun n -> n + 1.0) l1
+    printf "l1 = %O\nr1 = %O\n" l1 r1
+
+
+let swap (x, y) = (y, x)
+let test_map3 () =
+    let l1 = [(4, true); (6, false); (88, true)]
+    let r1 = map swap l1
+    printf "l1 = %O\nr1 = %O\n" l1 r1
+
+let test_map4 () =
+    let l1 = [1.2; 23.45; 56.78]
+    let r1 = map (fun n -> printf "%f" n) l1
+    printf "l1 = %O\nr1 = %O\n" l1 r1
+
+
 
 (*type 'a mylist = Empty | NonEmpty of 'a * 'a mylist
 
