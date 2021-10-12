@@ -1,8 +1,6 @@
 ﻿module Lesson5
 
-
 open Lesson3
-
 
 let test_currying1 () =
     let g = iter (fun x -> printf "%d" x)   // this is currying
@@ -33,8 +31,5 @@ let currify f (a, b) = f a b
 // this uncurrifies a function
 let uncurrify f a b = f (a, b)
 
-// this is another higher-order function: it sums anything given a plus operator and a zero element
-let rec sum (+) zero l =    // sum : ('a -> 'b -> 'b) -> 'b -> 'a list -> 'b
-    match l with
-    | [] -> zero
-    | x :: xs -> x + sum (+) zero xs
+
+
