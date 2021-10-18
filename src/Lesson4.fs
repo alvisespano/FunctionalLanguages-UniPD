@@ -5,6 +5,9 @@ type 'a mylist = Empty | NonEmpty of 'a * 'a mylist
 // we have one constant case for the empty list; and another case for the list construction
 // these 2 cases are like the base case of a recursion and the inductive case: that's a recursive data type
 
+//type 'a list = [] | (::) of 'a * 'a list
+
+
 // this is a list made of 2 elements: 2 and 3
 // that's pretty uncomfortable to write, but it is perfectly integrated within the language: no special syntax or constructs are needed
 let l1 : int mylist = NonEmpty (2, NonEmpty (3, Empty))

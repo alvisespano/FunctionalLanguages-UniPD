@@ -43,5 +43,4 @@ let test_sum () =
     let r6 = sum (sprintf "%s %s") "" ["ciao"; "sono"; "io"]
     printfn "r1 = %d" r1
 
-// TODO for MONDAY 18/10/21
-//let rec fold f z l = ...
+
