@@ -44,3 +44,4 @@ let test_fold () =
     let r4 = map (fun x -> printf "%d " x; x + 1) [1 .. 5]
     let r5 = map' (fun x -> printf "%d " x; x + 1) [1 .. 5]
     printf "\n%O\n%O\n" r4 r5
+
