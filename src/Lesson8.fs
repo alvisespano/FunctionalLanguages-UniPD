@@ -46,6 +46,8 @@ public static int optionalAdd(int n, Integer m)
 // lightweight types are type aliases, i.e. a short name for an already existing type (like a typedef in C)
 type 'a tree = Tree of 'a * 'a tree option * 'a tree option
 
+let t1 = Tree (3, Some (Tree (5, None, None)), None)
+
 
 // generate an int tree
 let rnd = new System.Random ()
@@ -83,3 +85,30 @@ let test_tree () =
     let t1 = Tree (1, Some (Tree (2, None, None)), None)    // sample tree written by hand
     let t2 = generate_tree ()
     printf "%O ===> %A" t2 (flatten_tree t2)
+
+
+let f x = x + 1 // f : int -> int
+
+let y = f 8
+let z = f "ciao"
+
+let w = (fun x -> x - 1) (y + 2)
+
+let o1 = Some 3
+
+type color = Black | Red | Green | Yellow
+           | Rgb of int * int * int // Rgb : int * int * int -> color
+
+let col1 = Black
+let col2 = (4, "ciao", Green)
+let col3 = Rgb (1, 2, 3)
+let col4 = Rgb
+
+let f x y =
+    let z = 3
+    z + x + (let u = y * y + 2 in u * u)
+
+
+
+
+
