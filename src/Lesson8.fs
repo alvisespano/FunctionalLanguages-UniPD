@@ -87,28 +87,5 @@ let test_tree () =
     printf "%O ===> %A" t2 (flatten_tree t2)
 
 
-let f x = x + 1 // f : int -> int
-
-let y = f 8
-let z = f "ciao"
-
-let w = (fun x -> x - 1) (y + 2)
-
-let o1 = Some 3
-
-type color = Black | Red | Green | Yellow
-           | Rgb of int * int * int // Rgb : int * int * int -> color
-
-let col1 = Black
-let col2 = (4, "ciao", Green)
-let col3 = Rgb (1, 2, 3)
-let col4 = Rgb
-
-let f x y =
-    let z = 3
-    z + x + (let u = y * y + 2 in u * u)
-
-
-
 
 
