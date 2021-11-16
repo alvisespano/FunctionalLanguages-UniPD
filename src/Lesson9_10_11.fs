@@ -39,3 +39,36 @@ let v3 = (let n = 8 in n) + 1      // this is a call to the plus (+) operator wh
 
 // what is important to understand is that the let..in construct can be used ANYWHERE, nested within any expression and allows the programmer to create
 // new bindings that are just local to the expression following the in keyword: the whole let..in expression evaluates to the expression after the in, which is basically the body
+
+
+let prg1 =
+    let y = 6 
+    let f = fun x -> x + y
+    let y = 9
+    let g = 11
+    let z = f 8
+    let w = g 9
+    z
+
+let prg2 =
+    let f = 5
+    let f = fun (x : int) -> f x
+    let rec g = fun (x : int) -> if x < 0 then "ciao" else g (x + 1)
+    f 8
+    
+(*
+int g(int x) {
+    return g(x + 1);
+}
+*)
+
+
+(*
+int i = 5;
+string s = "ciao";
+
+i = s;
+int j = i + 4;
+
+*)
+
