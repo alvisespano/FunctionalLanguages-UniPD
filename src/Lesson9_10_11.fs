@@ -50,16 +50,35 @@ let prg1 =
     let w = g 9
     z
 
+type anything = Me | You
+
 let prg2 =
     let f = 5
-    let f = fun (x : int) -> f x
+    let f = fun x -> x + 1
+    let f2 = fun x -> x // f2 : 'a -> 'a
+    let h = f2 6, f2 "ciao", f2 5.6
+    let f3 = fun (x, y) -> (y, x)   // f3 : 'a * 'b -> 'b * 'a
+    let f4 = fun x -> fun y -> x y  // f4 : ('a -> 'b) -> 'a -> 'b
     let rec g = fun (x : int) -> if x < 0 then "ciao" else g (x + 1)
     f 8
+
+let prg3 =
+    let k = 1
+    let f = fun x -> x + k
+    let k = 8
+    f 9
     
 (*
-int g(int x) {
-    return g(x + 1);
+int M[10];
+
+void sum_array(int x) {
+    int r = 0;
+    for (int i = 0; i < x; ++i)
+        r += M[i];
+    return r;
 }
+
+
 *)
 
 
