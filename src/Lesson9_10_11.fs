@@ -67,7 +67,28 @@ let prg3 =
     let f = fun x -> x + k
     let k = 8
     f 9
-    
+
+type person = { name : string; surname : string; age : int }
+
+let alvise = { name = "Alvise"; surname = "Spano'"; age = 44 }
+
+let prg4 =
+    let f = fun x -> fun y ->
+        let g = fun z -> (z, y)
+        if y = 7 then 0 else 1
+    let r1 = f true 9
+    let r2 = f "ciao" 8
+    ()
+
+
+let rec f = fun x -> if x < 0 then 0 else f (x - 1)
+
+let rec id = fun x -> id x 
+id 8
+
+
+
+
 (*
 int M[10];
 
