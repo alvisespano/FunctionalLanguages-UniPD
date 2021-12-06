@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net472</TargetFramework> 
@@ -16,6 +16,7 @@
     <Compile Include="Lesson7.fs" />
     <Compile Include="Lesson8.fs" />
     <Compile Include="Lesson9_10_11.fs" />
+    <Compile Include="Lesson17.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 </Project>
