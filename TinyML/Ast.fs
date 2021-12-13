@@ -1,5 +1,8 @@
 ﻿module TinyML.Ast
 
+exception TypeError of string
+exception UnexpectedError of string
+
 type tyvar = int
 
 type ty =
@@ -22,25 +25,13 @@ type expr =
     | Lambda of string * ty option * expr
     | App of expr * expr
     | Var of string
-    | Let of string * ty option * expr * expr
+    | Let of string * expr * expr
     | LetRec of string * ty option * expr * expr
     | IfThenElse of expr * expr * expr option
     | Tuple of expr list
-    | Plus of expr * expr
-    | Minus of expr * expr
-    | Times of expr * expr
-    | Div of expr * expr
-    | Mod of expr * expr
-    | Eq of expr * expr
-    | Neq of expr * expr
-    | Gt of expr * expr
-    | Geq of expr * expr
-    | Lt of expr * expr
-    | Leq of expr * expr
-    | UMinus of expr
-    | Not of expr
-
-    
+    | BinOp of expr * string * expr
+    | UnOp of string * expr
+   
     
 type 'a env = (string * 'a) list  
 
@@ -82,11 +73,8 @@ let rec pretty_expr e =
 
     | Var x -> x
 
-    | Let (x, None, e1, e2) ->
+    | Let (x, e1, e2) ->
         sprintf "let %s = %s in %s" x (pretty_expr e1) (pretty_expr e2)
-
-    | Let (x, Some t, e1, e2) ->
-        sprintf "let %s : %s = %s in %s" x (pretty_ty t) (pretty_expr e1) (pretty_expr e2)
 
     | LetRec (x, None, e1, e2) ->
         sprintf "let rec %s = %s in %s" x (pretty_expr e1) (pretty_expr e2)
@@ -102,3 +90,8 @@ let rec pretty_expr e =
         
     | Tuple es ->        
         sprintf "(%s)" (flatten pretty_expr es)
+
+    | BinOp (e1, op, e2) -> sprintf "%s %s %s" (pretty_expr e1) op (pretty_expr e2)
+    
+    | UnOp (op, e) -> sprintf "%s %s" op (pretty_expr e)
+        

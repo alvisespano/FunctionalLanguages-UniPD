@@ -52,17 +52,15 @@ and tokenize = parse
 	| '*'			{ STAR }
 	| '/'			{ SLASH }
 	| '%'			{ PERCENT }
-	| '!'			{ BANG }
-	| '|'			{ PIPE }
-	| '&'			{ AMP }
 	| '='			{ EQ }
-	| "!="			{ NEQ }
-	| "||"			{ DOUBLEPIPE }
-	| "&&"			{ DOUBLEAMP }
+	| "<>"			{ NEQ }
 	| '<'			{ LT }
 	| '>'			{ GT }
 	| "<="			{ LEQ }
 	| ">="			{ GEQ }
+	| "or"			{ OR }
+	| "and"			{ AND }
+	| "not"			{ NOT }
 
 	// keywords
 	| "if"			{ IF }
@@ -72,6 +70,9 @@ and tokenize = parse
 	| "false"		{ FALSE }
 	| "fun"			{ FUN }
 	| "->"			{ ARROW }
+	| "let"			{ LET }
+	| "rec"			{ REC }
+	| "in"			{ IN }
     
 	// brakets
 	| '('			{ BRA }

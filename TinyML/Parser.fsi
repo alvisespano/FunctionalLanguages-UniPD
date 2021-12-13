@@ -14,27 +14,20 @@ type token =
   | FALSE
   | BRA
   | KET
-  | SQBRA
-  | SQKET
-  | CURBRA
-  | CURKET
   | PLUS
   | MINUS
   | STAR
   | SLASH
   | PERCENT
-  | BANG
-  | QUESTION
-  | PIPE
-  | AMP
-  | DOUBLEPIPE
-  | DOUBLEAMP
   | LT
   | GT
   | LEQ
   | GEQ
   | EQ
   | NEQ
+  | AND
+  | OR
+  | NOT
   | COLON
   | SEMICOLON
   | COMMA
@@ -57,27 +50,20 @@ type tokenId =
     | TOKEN_FALSE
     | TOKEN_BRA
     | TOKEN_KET
-    | TOKEN_SQBRA
-    | TOKEN_SQKET
-    | TOKEN_CURBRA
-    | TOKEN_CURKET
     | TOKEN_PLUS
     | TOKEN_MINUS
     | TOKEN_STAR
     | TOKEN_SLASH
     | TOKEN_PERCENT
-    | TOKEN_BANG
-    | TOKEN_QUESTION
-    | TOKEN_PIPE
-    | TOKEN_AMP
-    | TOKEN_DOUBLEPIPE
-    | TOKEN_DOUBLEAMP
     | TOKEN_LT
     | TOKEN_GT
     | TOKEN_LEQ
     | TOKEN_GEQ
     | TOKEN_EQ
     | TOKEN_NEQ
+    | TOKEN_AND
+    | TOKEN_OR
+    | TOKEN_NOT
     | TOKEN_COLON
     | TOKEN_SEMICOLON
     | TOKEN_COMMA
@@ -89,9 +75,9 @@ type tokenId =
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 
-    | NONTERM__startexpr
+    | NONTERM__startprogram
+    | NONTERM_program
     | NONTERM_expr
-    | NONTERM_expr_
     | NONTERM_expr_app_atom
     | NONTERM_expr_tuple_atom
     | NONTERM_expr_tuple_atoms
@@ -108,4 +94,4 @@ val prodIdxToNonTerminal: int -> nonTerminalId
 
 /// This function gets the name of a token as a string
 val token_to_string: token -> string
-val expr : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( TinyML.Ast.expr ) 
+val program : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( TinyML.Ast.expr ) 
