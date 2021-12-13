@@ -85,7 +85,7 @@ let rec pretty_expr e =
             | e :: es -> sprintf "%s, %s" (pretty_expr e) (f es)
         sprintf "(%s)" (f es)
 
-let type_error msg = sprintf "type error: %s" msg
+let type_error msg = failwith (sprintf "type error: %s" msg)
 
 let rec typecheck_expr (env : ty env) (e : expr) : ty =
     match e with
@@ -126,7 +126,7 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         
     | LetRec (f, tf, e1, e2) ->
         let env0 = (f, tf) :: env
-        let t1 = typecheck_expr env1 e1
+        let t1 = typecheck_expr env0 e1
         match t1 with
         | TyArrow _ -> ()
         | _ -> failwithf "typecheck_expr: letrec is restricted to functions but got type %s" (pretty_ty t1)

@@ -1,0 +1,111 @@
+﻿%{
+
+open TinyML
+open TinyML.Parsing.LexYacc
+open TinyML.Ast
+
+let parse_error_rich = Some (fun ctx -> raise (ParseErrorContextException ctx))
+
+%}
+ 
+
+%token <System.Int32> INT
+%token <System.Double> FLOAT
+%token <System.Char> CHAR
+%token <System.String> STRING ID
+
+%token IF THEN ELSE FUN ARROW LET REC IN
+       TRUE FALSE 
+       BRA KET SQBRA SQKET CURBRA CURKET
+       PLUS MINUS STAR SLASH PERCENT BANG QUESTION PIPE AMP DOUBLEPIPE DOUBLEAMP
+       LT GT LEQ GEQ EQ NEQ
+       COLON SEMICOLON COMMA
+%token EOF
+
+%nonassoc THEN ELSE
+%left COMMA
+%right ARROW
+%left PIPE DOUBLEPIPE
+%left AMP DOUBLEAMP
+%left EQ LT GT LEQ GEQ NEQ
+%left PLUS MINUS 
+%left STAR SLASH MOD 
+%left APP
+%nonassoc NOT
+%nonassoc UMINUS
+%nonassoc BANG
+
+
+
+%type < TinyML.Ast.expr > expr
+
+%start expr
+
+%%
+
+expr:
+    expr_ EOF                           { $1 }
+
+
+expr_:
+    expr_tuple_atom                         { $1 }
+  | BRA expr_tuple_atoms KET                { Tuple $2 }
+
+
+expr_app_atom:
+    INT                                 { Lit (LInt $1) }
+  | FLOAT                               { Lit (LFloat $1) }
+  | STRING                              { Lit (LString $1) }
+  | CHAR                                { Lit (LChar $1) }
+  | TRUE                                { Lit (LBool true) }
+  | FALSE                               { Lit (LBool false) }
+  
+  | ID                                  { Var $1 }
+  
+  | BRA expr KET                        { $2 }
+
+expr_tuple_atom:
+    expr_app_atom                           { $1 }
+  | expr_tuple_atom expr_app_atom %prec APP { App ($1, $2) }
+  
+  | expr PLUS expr                          { Plus ($1, $3) }
+  | expr MINUS expr                         { Minus ($1, $3) }
+  | expr STAR expr                          { Times ($1, $3) }
+  | expr SLASH expr                         { Div ($1, $3) }
+  | expr PERCENT expr                       { Mod ($1, $3) }
+
+  | expr EQ expr                        { Eq ($1, $3) }
+  | expr NEQ expr                       { Neq ($1, $3) }
+  | expr LT expr                        { Lt ($1, $3) }
+  | expr GT expr                        { Gt ($1, $3) }
+  | expr LEQ expr                       { Leq ($1, $3) }
+  | expr GEQ expr                       { Geq ($1, $3) }
+
+  | MINUS expr %prec UMINUS             { UMinus $2 } 
+  | BANG expr                           { Not $2 }
+
+  | FUN ID ARROW expr                       { Lambda ($2, None, $4) }
+  | FUN BRA ID COLON ty KET ARROW expr      { Lambda ($3, Some $5, $8) }
+
+  | LET ID EQ expr IN expr                      { Let ($2, None, $4, $6) }
+  | LET ID COLON ty EQ expr IN expr             { Let ($2, Some $4, $6, $8) }
+  | LET REC ID EQ expr IN expr                  { LetRec ($3, None, $5, $7) }
+  | LET REC ID COLON ty EQ expr IN expr         { LetRec ($3, Some $5, $7, $9) }
+
+expr_tuple_atoms:
+    expr_tuple_atom                             { [$1] }
+  | expr_tuple_atom COMMA expr_tuple_atoms      { $1 :: $3 }
+
+
+
+ty:
+    ID                                  { TyName $1 }
+  | ty ARROW ty                         { TyArrow ($1, $3) }
+  | ty_tuple                            { TyTuple $1 }
+  | BRA ty KET                          { $2 }
+
+ty_tuple:
+    ty                                  { [$1] }
+  | ty STAR ty_tuple                    { $1 :: $3 }
+
+

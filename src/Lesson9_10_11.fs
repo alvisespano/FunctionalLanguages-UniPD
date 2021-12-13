@@ -47,7 +47,7 @@ let prg1 =
     let y = 9
     let g = 11
     let z = f 8
-    let w = g 9
+    //let w = g 9
     z
 
 type anything = Me | You
