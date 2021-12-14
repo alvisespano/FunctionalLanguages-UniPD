@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <FsLexToolPath>..\packages\FsLexYacc.10.2.0\build\fslex\netcoreapp3.1</FsLexToolPath>
+	  <FsYaccToolPath>..\packages\FsLexYacc.10.2.0\build\fsyacc\netcoreapp3.1</FsYaccToolPath>
+	  <FsLexToolExe>fslex.dll</FsLexToolExe>
+	  <FsYaccToolExe>fsyacc.dll</FsYaccToolExe>
+	  <FsLexYaccToolRunner>dotnet </FsLexYaccToolRunner>
+  </PropertyGroup>
+
+	<!--Import Project="..\packages\FsLexYacc.10.2.0\bin\FsLexYacc.targets" /-->
+
+	<ItemGroup>
+		<Compile Include="Ast.fs" />
+		<Compile Include="Parsing.fs" />
+		<FsYacc Include="Parser.fsy">
+			<OtherFlags>--module TinyML.Parser -v</OtherFlags>
+		</FsYacc>
+		<FsLex Include="Lexer.fsl">
+			<OtherFlags>--unicode --module TinyML.Lexer</OtherFlags>
+		</FsLex>
+		<Compile Include="Parser.fsi" />
+		<Compile Include="Parser.fs" />
+		<Compile Include="Lexer.fs" />
+		<Compile Include="Typing.fs" />
+		<Compile Include="Eval.fs" />
+		<Compile Include="Main.fs" />
+		<None Include="test.tml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="FsLexYacc" Version="10.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="FSharp.Core" Version="4.7.1" />
+	</ItemGroup>
+
+</Project>

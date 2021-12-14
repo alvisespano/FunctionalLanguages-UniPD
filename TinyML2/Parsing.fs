@@ -89,3 +89,4 @@ let parse_from_lexbuf syntax_error lexbuf filename (start_line, start_col) parse
 let parse_from_TextReader syntax_error trd = parse_from_lexbuf syntax_error (Lexing.LexBuffer<_>.FromTextReader trd)
 
 let parse_from_string syntax_error s name = parse_from_lexbuf syntax_error (Lexing.LexBuffer<_>.FromString s) (sprintf "<%s>" name)
+

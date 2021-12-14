@@ -7,6 +7,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Lessons", "Lessons.fsproj",
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TinyML", "..\TinyML\TinyML.fsproj", "{2BD7C40F-1BA7-4282-864F-C3B685A22538}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TinyML2", "..\TinyML2\TinyML2.fsproj", "{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Interactive|Any CPU = Debug Interactive|Any CPU
@@ -32,18 +34,26 @@ Global
 		{358DC28C-124F-402E-81D7-B0D25983B5B3}.TinyML Test Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug Interactive|Any CPU.ActiveCfg = Debug Interactive|Any CPU
 		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug Interactive|Any CPU.Build.0 = Debug Interactive|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug Test|Any CPU.ActiveCfg = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug Test|Any CPU.Build.0 = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug|Any CPU.ActiveCfg = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug|Any CPU.Build.0 = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Lessons Debug|Any CPU.ActiveCfg = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Lessons Debug|Any CPU.Build.0 = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Release|Any CPU.ActiveCfg = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Release|Any CPU.Build.0 = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.TinyML Interactive Debug|Any CPU.ActiveCfg = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.TinyML Interactive Debug|Any CPU.Build.0 = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.TinyML Test Debug|Any CPU.ActiveCfg = Debug Test|Any CPU
-		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.TinyML Test Debug|Any CPU.Build.0 = Debug Test|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug Test|Any CPU.ActiveCfg = Debug Interactive|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Lessons Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.TinyML Interactive Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.TinyML Test Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Debug Interactive|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Debug Interactive|Any CPU.Build.0 = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Debug Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Debug Test|Any CPU.Build.0 = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Lessons Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Lessons Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.TinyML Interactive Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.TinyML Interactive Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.TinyML Test Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5DB1D4-BD5A-4C49-AC9D-8F51A7014D67}.TinyML Test Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
