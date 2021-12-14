@@ -29,7 +29,7 @@ type token =
   | OR
   | NOT
   | COLON
-  | SEMICOLON
+  | SEMICOLON2
   | COMMA
   | STRING of (System.String)
   | ID of (System.String)
@@ -65,7 +65,7 @@ type tokenId =
     | TOKEN_OR
     | TOKEN_NOT
     | TOKEN_COLON
-    | TOKEN_SEMICOLON
+    | TOKEN_SEMICOLON2
     | TOKEN_COMMA
     | TOKEN_STRING
     | TOKEN_ID
@@ -75,8 +75,10 @@ type tokenId =
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 
+    | NONTERM__startinteractive
     | NONTERM__startprogram
     | NONTERM_program
+    | NONTERM_interactive
     | NONTERM_expr
     | NONTERM_expr_app_atom
     | NONTERM_expr_tuple_atom
@@ -94,4 +96,5 @@ val prodIdxToNonTerminal: int -> nonTerminalId
 
 /// This function gets the name of a token as a string
 val token_to_string: token -> string
+val interactive : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( TinyML.Ast.expr ) 
 val program : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( TinyML.Ast.expr ) 

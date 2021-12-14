@@ -3,7 +3,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net472</TargetFramework> 
 
-    <WarnOn>3390;$(WarnOn)</WarnOn>
+    <WarnOn>3390;$(WarnOn)</WarnOn> 
+
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +18,7 @@
     <Compile Include="Lesson7.fs" />
     <Compile Include="Lesson8.fs" />
     <Compile Include="Lesson9_10_11.fs" />
-    <Compile Include="Lesson17.fs" />
+    <Compile Include="Lesson17_18_19_20.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 </Project>

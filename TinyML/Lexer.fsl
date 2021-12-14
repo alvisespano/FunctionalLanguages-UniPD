@@ -3,8 +3,8 @@
 open System
 open FSharp.Text.Lexing
 
-open TinyML.Parsing
-open TinyML.Parsing.LexYacc
+open FSharp.Common.Parsing
+open FSharp.Common.Parsing.LexYacc
 open TinyML.Ast
 open TinyML.Parser
 
@@ -80,6 +80,7 @@ and tokenize = parse
 
 	// punctuation
 	| ':'			{ COLON }
+	| ";;"			{ SEMICOLON2 }
 	| ','			{ COMMA }
 
 	// literals

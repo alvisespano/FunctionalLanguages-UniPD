@@ -1,37 +1,60 @@
-﻿module TinyML.Main
+﻿(*
+* TinyML
+* Main.fs: main code
+*)
 
-open FSharp.Text
+module TinyML.Main
+
 open System
-open TinyML.Parsing
+open FSharp.Common
 open TinyML.Ast
 
-exception SyntaxError of string * Lexing.LexBuffer<char>
+let parse_from_TextReader rd filename parser = Parsing.parse_from_TextReader SyntaxError rd filename (1, 1) parser Lexer.tokenize Parser.tokenTagToTokenId
 
-let private __syntax_error (msg, lexbuf : Lexing.LexBuffer<char>) = SyntaxError (msg, lexbuf) //new syntax_error (msg, lexbuf)
-let parse_from_TextReader args = parse_from_TextReader __syntax_error args
+//let parse_from_string parser s = Parsing.parse_from_string SyntaxError s (sprintf "%s:\"%s\"" what s) (0, 0) parser Lexer.tokenize Parser.tokenTagToTokenId
+//let parse_line rd name = Parsing.parse_from_TextReader rd name (0, 0) Parser.interactive_line Lexer.tokenize Parser.tokenTagToTokenId
+
 
 let load_and_parse_program filename =
    use fstr = new IO.FileStream (filename, IO.FileMode.Open)
    use rd = new IO.StreamReader (fstr)
    printfn "parsing source file '%s'..." filename
-   parse_from_TextReader rd filename (1, 1) Parser.program Lexer.tokenize Parser.tokenTagToTokenId
+   parse_from_TextReader rd filename Parser.program 
 
-let parse_from_string what p s = parse_from_string __syntax_error s (sprintf "%s:\"%s\"" what s) (0, 0) p Lexer.tokenize Parser.tokenTagToTokenId
+let interpret_expr e =
+    printfn "AST:\t%A\npretty:\t%s" e (pretty_expr e)
+    let t = Typing.typecheck_expr [] e
+    printfn "type:\t%s" (pretty_ty t)
+    let v = Eval.eval_expr [] e
+    printfn "value:\t%s" (pretty_value v)
 
 
+let main_interpreter filename =
+    try
+        let prg = load_and_parse_program filename
+        interpret_expr prg
+    with SyntaxError (msg, lexbuf) -> printfn "\nsyntax error: %s\nat token: %A\nlocation: %O" msg lexbuf.Lexeme lexbuf.EndPos
+        | TypeError msg             -> printfn "\ntype error: %s" msg
+        | UnexpectedError msg       -> printfn "\nunexpected error: %s" msg
+
+let main_interactive () =
+    while true do
+        try
+            printf "\n> "
+            stdout.Flush ()
+            let prg = parse_from_TextReader stdin "LINE" Parser.interactive
+            interpret_expr prg
+        with SyntaxError (msg, lexbuf) -> printfn "\nsyntax error: %s\nat token: %A\nlocation: %O" msg lexbuf.Lexeme lexbuf.EndPos
+           | TypeError msg             -> printfn "\ntype error: %s" msg
+           | UnexpectedError msg       -> printfn "\nunexpected error: %s" msg
+    
 [<EntryPoint>]
 let main argv =
     let r =
-        try
-            let prg = load_and_parse_program argv.[0]
-            printfn "parsed program:\n%s\n\nAST:\n%A" (pretty_expr prg) prg
-            let t = Typing.typecheck_expr [] prg
-            printfn "type: %s" (pretty_ty t)
+        try 
+            if argv.Length < 1 then main_interactive ()
+            else main_interpreter argv.[0]
             0
-        with SyntaxError (msg, lexbuf) -> printfn "\nsyntax error: %s\nat token: %A\nlocation: %O" msg lexbuf.Lexeme lexbuf.EndPos; 1
-           | TypeError msg             -> printfn "\ntype error: %s" msg; 2
-           | UnexpectedError msg       -> printfn "\nunexpected error: %s" msg; 3
-           | e                         -> printfn "\nexception caught: %O" e; 4
+        with e -> printfn "\nexception caught: %O" e; 1
     Console.ReadLine () |> ignore
     r
-

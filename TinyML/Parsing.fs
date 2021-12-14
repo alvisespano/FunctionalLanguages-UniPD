@@ -1,10 +1,10 @@
 ﻿(*
 * F# Common Library
 * Parsing.fs: parsing facilities
-* (C) 2007-2012 Alvise Spano' @ Universita' Ca' Foscari di Venezia
+* (C) 2007-2021 Alvise Spano' @ Universita' Ca' Foscari di Venezia
 *)
 
-module TinyML.Parsing
+module FSharp.Common.Parsing
 
 open System
 open System.Text.RegularExpressions

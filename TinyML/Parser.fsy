@@ -1,7 +1,7 @@
 ﻿%{
 
 open TinyML
-open TinyML.Parsing.LexYacc
+open FSharp.Common.Parsing.LexYacc
 open TinyML.Ast
 
 let parse_error_rich = Some (fun ctx -> raise (ParseErrorContextException ctx))
@@ -20,7 +20,7 @@ let parse_error_rich = Some (fun ctx -> raise (ParseErrorContextException ctx))
        PLUS MINUS STAR SLASH PERCENT
        LT GT LEQ GEQ EQ NEQ
        AND OR NOT
-       COLON SEMICOLON COMMA
+       COLON SEMICOLON2 COMMA
 %token EOF
 
 %nonassoc THEN ELSE
@@ -35,17 +35,19 @@ let parse_error_rich = Some (fun ctx -> raise (ParseErrorContextException ctx))
 %nonassoc NOT
 %nonassoc UMINUS
 
-
-
 %type < TinyML.Ast.expr > program
+%type < TinyML.Ast.expr > interactive
 
 %start program
+%start interactive
 
 %%
 
 program:
     expr EOF                           { $1 }
 
+interactive:
+    expr SEMICOLON2                    { $1 }
 
 expr:
     expr_tuple_atom                         { $1 }
@@ -59,7 +61,8 @@ expr_app_atom:
   | CHAR                                { Lit (LChar $1) }
   | TRUE                                { Lit (LBool true) }
   | FALSE                               { Lit (LBool false) }
-  
+  | BRA KET                             { Lit LUnit }
+
   | ID                                  { Var $1 }
   
   | BRA expr KET                        { $2 }

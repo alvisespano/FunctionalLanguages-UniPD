@@ -1,4 +1,4 @@
-﻿module Lesson17
+﻿module Lesson17_18_19_20
 
 type tyvar = int
 
@@ -132,3 +132,5 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         | _ -> failwithf "typecheck_expr: letrec is restricted to functions but got type %s" (pretty_ty t1)
         if t1 <> tf then failwithf "typecheck_expr: letrec type mismatch: expected %s but got %s" (pretty_ty tf) (pretty_ty t1)
         typecheck_expr env0 e2
+
+// mind that from Lesson 21 on this code has migrated into a separate project: TinyML

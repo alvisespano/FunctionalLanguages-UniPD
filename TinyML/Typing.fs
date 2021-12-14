@@ -1,11 +1,12 @@
-﻿module TinyML.Typing
+﻿(*
+* TinyML
+* Typing.fs: typing algorithms
+*)
+
+module TinyML.Typing
 
 open Ast
-open Printf
 
-let throw_formatted exnf fmt = ksprintf (fun s -> raise (exnf s)) fmt
-
-let unexpected_error fmt = throw_formatted UnexpectedError fmt
 let type_error fmt = throw_formatted TypeError fmt
 
 let rec typecheck_expr (env : ty env) (e : expr) : ty =
@@ -29,8 +30,8 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         match t1 with
         | TyArrow (l, r) ->
             if l = t2 then r 
-            else type_error "wrong application: %s does not match %s" (pretty_ty t2) (pretty_ty l)
-        | _ -> type_error "expecting an arrow on left side of application but got %s" (pretty_ty t1)
+            else type_error "wrong application: argument type %s does not match function domain %s" (pretty_ty t2) (pretty_ty l)
+        | _ -> type_error "expecting a function on left side of application but got %s" (pretty_ty t1)
 
     | Let (x, e1, e2) ->
         let t1 = typecheck_expr env e1
@@ -41,7 +42,7 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         if t1 <> TyName "bool" then type_error "if condition must be a bool but got a %s" (pretty_ty t1)
         let t2 = typecheck_expr env e2
         let t3 = typecheck_expr env e3
-        if t2 <> t3 then type_error"type mismatch in then (%s) and else (%s)" (pretty_ty t2) (pretty_ty t3)
+        if t2 <> t3 then type_error "type mismatch in if-then-else: then branch has type %s and is different from else branch type %s" (pretty_ty t2) (pretty_ty t3)
         t2
 
     | Tuple es ->
@@ -67,4 +68,4 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         | _ -> type_error "binary operator expects two int operands but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
         t1
 
-    | _ -> unexpected_error "unsupported expression: %s (AST: %A)" (pretty_expr e) e
+    | _ -> unexpected_error "typecheck_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e
