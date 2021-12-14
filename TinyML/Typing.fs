@@ -9,6 +9,14 @@ open Ast
 
 let type_error fmt = throw_formatted TypeError fmt
 
+// define a new variable for floats
+let TyFloat = TyName "float"
+// define an active pattern for floats
+let (|TyFloat|_|) (t : ty) =
+    match t with
+    | TyName "float" -> Some ()
+    | _ -> None
+
 let rec typecheck_expr (env : ty env) (e : expr) : ty =
     match e with
     | Lit (LInt _) -> TyName "int"
@@ -64,8 +72,40 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         let t1 = typecheck_expr env e1
         let t2 = typecheck_expr env e2
         match t1, t2 with
-        | TyName "int", TyName "int" -> ()
+        | TyName "int", TyName "int" -> TyName "int"
+        | TyName "float", TyName "float" -> TyName "float"
+        | TyName "int", TyName "float"
+        | TyName "float", TyName "int" -> TyName "float"
         | _ -> type_error "binary operator expects two int operands but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
-        t1
+        
+
+    | BinOp (e1, ("<" | "<=" | ">" | ">=" | "=" | "<>" as op), e2) ->
+        let t1 = typecheck_expr env e1
+        let t2 = typecheck_expr env e2
+        match t1, t2 with
+        | TyName "int", TyName "int" -> ()
+        | _ -> type_error "binary operator expects two numeric operands but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
+        TyName "bool"
+
+    | BinOp (e1, ("and" | "or" as op), e2) ->
+        let t1 = typecheck_expr env e1
+        let t2 = typecheck_expr env e2
+        match t1, t2 with
+        | TyName "bool", TyName "bool" -> ()
+        | _ -> type_error "binary operator expects two bools operands but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
+        TyName "bool"
+
+    | UnOp ("not", e) ->
+        let t = typecheck_expr env e
+        if t <> TyName "bool" then 
+            type_error "unary not expects a bool operand but got %s" (pretty_ty t)
+            
+    | UnOp ("-", e) ->
+        let t = typecheck_expr env e
+        match t with
+        | TyName "int" -> TyName "int"
+        | TyName "float" -> TyName "float"
+        | _ -> type_error "unary negation expects a numeric operand but got %s" (pretty_ty t)
+
 
     | _ -> unexpected_error "typecheck_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e
