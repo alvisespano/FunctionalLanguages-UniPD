@@ -17,6 +17,7 @@ let (|TyFloat|_|) (t : ty) =
     | TyName "float" -> Some ()
     | _ -> None
 
+
 let rec typecheck_expr (env : ty env) (e : expr) : ty =
     match e with
     | Lit (LInt _) -> TyName "int"
@@ -25,6 +26,10 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
     | Lit (LChar _) -> TyName "char"
     | Lit (LBool _) -> TyName "bool"
     | Lit LUnit -> TyName "unit"
+
+    | Var x ->
+        let _, t = List.find (fun (y, _) -> x = y) env
+        t
 
     | Lambda (x, None, e) -> unexpected_error "typecheck_expr: unannotated lambda is not supported"
     
@@ -108,4 +113,4 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         | _ -> type_error "unary negation expects a numeric operand but got %s" (pretty_ty t)
 
 
-    | _ -> unexpected_error "typecheck_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e
+    //| _ -> unexpected_error "typecheck_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e
