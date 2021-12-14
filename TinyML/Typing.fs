@@ -9,23 +9,14 @@ open Ast
 
 let type_error fmt = throw_formatted TypeError fmt
 
-// define a new variable for floats
-let TyFloat = TyName "float"
-// define an active pattern for floats
-let (|TyFloat|_|) (t : ty) =
-    match t with
-    | TyName "float" -> Some ()
-    | _ -> None
-
-
 let rec typecheck_expr (env : ty env) (e : expr) : ty =
     match e with
-    | Lit (LInt _) -> TyName "int"
-    | Lit (LFloat _) -> TyName "float"
-    | Lit (LString _) -> TyName "string"
-    | Lit (LChar _) -> TyName "char"
-    | Lit (LBool _) -> TyName "bool"
-    | Lit LUnit -> TyName "unit"
+    | Lit (LInt _) -> TyInt
+    | Lit (LFloat _) -> TyFloat
+    | Lit (LString _) -> TyString
+    | Lit (LChar _) -> TyChar
+    | Lit (LBool _) -> TyBool
+    | Lit LUnit -> TyUnit
 
     | Var x ->
         let _, t = List.find (fun (y, _) -> x = y) env
@@ -44,19 +35,24 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         | TyArrow (l, r) ->
             if l = t2 then r 
             else type_error "wrong application: argument type %s does not match function domain %s" (pretty_ty t2) (pretty_ty l)
-        | _ -> type_error "expecting a function on left side of application but got %s" (pretty_ty t1)
+        | _ -> type_error "expecting a function on left side of application, but got %s" (pretty_ty t1)
 
     | Let (x, e1, e2) ->
         let t1 = typecheck_expr env e1
         typecheck_expr ((x, t1) :: env) e2
 
-    | IfThenElse (e1, e2, Some e3) ->
+    | IfThenElse (e1, e2, e3o) ->
         let t1 = typecheck_expr env e1
-        if t1 <> TyName "bool" then type_error "if condition must be a bool but got a %s" (pretty_ty t1)
+        if t1 <> TyBool then type_error "if condition must be a bool, but got a %s" (pretty_ty t1)
         let t2 = typecheck_expr env e2
-        let t3 = typecheck_expr env e3
-        if t2 <> t3 then type_error "type mismatch in if-then-else: then branch has type %s and is different from else branch type %s" (pretty_ty t2) (pretty_ty t3)
-        t2
+        match e3o with
+        | None ->
+            if t2 <> TyUnit then type_error "if-then without else requires unit type on then branch, but got %s" (pretty_ty t2)
+            TyUnit
+        | Some e3 ->
+            let t3 = typecheck_expr env e3
+            if t2 <> t3 then type_error "type mismatch in if-then-else: then branch has type %s and is different from else branch type %s" (pretty_ty t2) (pretty_ty t3)
+            t2
 
     | Tuple es ->
         TyTuple (List.map (typecheck_expr env) es)
@@ -69,48 +65,49 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         let t1 = typecheck_expr env0 e1
         match t1 with
         | TyArrow _ -> ()
-        | _ -> type_error "let rec is restricted to functions but got type %s" (pretty_ty t1)
-        if t1 <> tf then type_error "let rec type mismatch: expected %s but got %s" (pretty_ty tf) (pretty_ty t1)
+        | _ -> type_error "let rec is restricted to functions, but got type %s" (pretty_ty t1)
+        if t1 <> tf then type_error "let rec type mismatch: expected %s, but got %s" (pretty_ty tf) (pretty_ty t1)
         typecheck_expr env0 e2
 
     | BinOp (e1, ("+" | "-" | "/" | "%" | "*" as op), e2) ->
         let t1 = typecheck_expr env e1
         let t2 = typecheck_expr env e2
         match t1, t2 with
-        | TyName "int", TyName "int" -> TyName "int"
-        | TyName "float", TyName "float" -> TyName "float"
-        | TyName "int", TyName "float"
-        | TyName "float", TyName "int" -> TyName "float"
-        | _ -> type_error "binary operator expects two int operands but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
+        | TyInt, TyInt -> TyInt
+        | TyFloat, TyFloat -> TyFloat
+        | TyInt, TyFloat
+        | TyFloat, TyInt -> TyFloat
+        | _ -> type_error "binary operator expects two int operands, but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
         
-
     | BinOp (e1, ("<" | "<=" | ">" | ">=" | "=" | "<>" as op), e2) ->
         let t1 = typecheck_expr env e1
         let t2 = typecheck_expr env e2
         match t1, t2 with
-        | TyName "int", TyName "int" -> ()
-        | _ -> type_error "binary operator expects two numeric operands but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
-        TyName "bool"
+        | TyInt, TyInt -> ()
+        | _ -> type_error "binary operator expects two numeric operands, but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
+        TyBool
 
     | BinOp (e1, ("and" | "or" as op), e2) ->
         let t1 = typecheck_expr env e1
         let t2 = typecheck_expr env e2
         match t1, t2 with
-        | TyName "bool", TyName "bool" -> ()
-        | _ -> type_error "binary operator expects two bools operands but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
-        TyName "bool"
+        | TyBool, TyBool -> ()
+        | _ -> type_error "binary operator expects two bools operands, but got %s %s %s" (pretty_ty t1) op (pretty_ty t2)
+        TyBool
+
+    | BinOp (_, op, _) -> unexpected_error "typecheck_expr: unsupported binary operator (%s)" op
 
     | UnOp ("not", e) ->
         let t = typecheck_expr env e
-        if t <> TyName "bool" then 
-            type_error "unary not expects a bool operand but got %s" (pretty_ty t)
+        if t <> TyBool then type_error "unary not expects a bool operand, but got %s" (pretty_ty t)
+        TyBool
             
     | UnOp ("-", e) ->
         let t = typecheck_expr env e
         match t with
-        | TyName "int" -> TyName "int"
-        | TyName "float" -> TyName "float"
-        | _ -> type_error "unary negation expects a numeric operand but got %s" (pretty_ty t)
+        | TyInt -> TyInt
+        | TyFloat -> TyFloat
+        | _ -> type_error "unary negation expects a numeric operand, but got %s" (pretty_ty t)
 
+    | UnOp (op, _) -> unexpected_error "typecheck_expr: unsupported unary operator (%s)" op
 
-    //| _ -> unexpected_error "typecheck_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e

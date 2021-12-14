@@ -30,6 +30,28 @@ type ty =
     | TyVar of tyvar
     | TyTuple of ty list
 
+// pseudo data constructors for literal types
+let TyFloat = TyName "float"
+let TyInt = TyName "int"
+let TyChar = TyName "char"
+let TyString = TyName "string"
+let TyBool = TyName "bool"
+let TyUnit = TyName "unit"
+
+// active pattern for literal types
+let private (|TyLit|_|) name (t : ty) =
+    match t with
+    | TyName s when s = name -> Some ()
+    | _ -> None
+
+let (|TyFloat|_|) = (|TyLit|_|) "float"
+let (|TyInt|_|) = (|TyLit|_|) "int"
+let (|TyChar|_|) = (|TyLit|_|) "char"
+let (|TyString|_|) = (|TyLit|_|) "string"
+let (|TyBool|_|) = (|TyLit|_|) "bool"
+let (|TyUnit|_|) = (|TyLit|_|) "unit"
+
+
 type scheme = Forall of tyvar list * ty
 
 type lit = LInt of int
