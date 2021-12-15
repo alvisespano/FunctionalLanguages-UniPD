@@ -80,6 +80,7 @@ type nonTerminalId =
     | NONTERM_program
     | NONTERM_interactive
     | NONTERM_expr
+    | NONTERM_binding
     | NONTERM_expr_app_atom
     | NONTERM_expr_tuple_atom
     | NONTERM_expr_tuple_atoms
@@ -96,5 +97,5 @@ val prodIdxToNonTerminal: int -> nonTerminalId
 
 /// This function gets the name of a token as a string
 val token_to_string: token -> string
-val interactive : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( TinyML.Ast.expr ) 
+val interactive : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( TinyML.Ast.interactive ) 
 val program : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( TinyML.Ast.expr ) 

@@ -10,43 +10,53 @@ open FSharp.Common
 open TinyML.Ast
 
 let parse_from_TextReader rd filename parser = Parsing.parse_from_TextReader SyntaxError rd filename (1, 1) parser Lexer.tokenize Parser.tokenTagToTokenId
-
-//let parse_from_string parser s = Parsing.parse_from_string SyntaxError s (sprintf "%s:\"%s\"" what s) (0, 0) parser Lexer.tokenize Parser.tokenTagToTokenId
-//let parse_line rd name = Parsing.parse_from_TextReader rd name (0, 0) Parser.interactive_line Lexer.tokenize Parser.tokenTagToTokenId
-
-
-let load_and_parse_program filename =
-   use fstr = new IO.FileStream (filename, IO.FileMode.Open)
-   use rd = new IO.StreamReader (fstr)
-   printfn "parsing source file '%s'..." filename
-   parse_from_TextReader rd filename Parser.program 
-
+    
 let interpret_expr e =
+    #if DEBUG
     printfn "AST:\t%A\npretty:\t%s" e (pretty_expr e)
+    #endif
     let t = Typing.typecheck_expr [] e
+    #if DEBUG
     printfn "type:\t%s" (pretty_ty t)
+    #endif
     let v = Eval.eval_expr [] e
-    printfn "value:\t%s" (pretty_value v)
+    #if DEBUG
+    printfn "value:\t%s\n" (pretty_value v)
+    #endif
+    t, v
 
+let trap f =
+    try f ()
+    with SyntaxError (msg, lexbuf) -> printfn "\nsyntax error: %s\nat token: %A\nlocation: %O" msg lexbuf.Lexeme lexbuf.EndPos
+       | TypeError msg             -> printfn "\ntype error: %s" msg
+       | UnexpectedError msg       -> printfn "\nunexpected error: %s" msg
 
 let main_interpreter filename =
-    try
-        let prg = load_and_parse_program filename
-        interpret_expr prg
-    with SyntaxError (msg, lexbuf) -> printfn "\nsyntax error: %s\nat token: %A\nlocation: %O" msg lexbuf.Lexeme lexbuf.EndPos
-        | TypeError msg             -> printfn "\ntype error: %s" msg
-        | UnexpectedError msg       -> printfn "\nunexpected error: %s" msg
+    trap <| fun () ->
+        printfn "loading source file '%s'..." filename
+        use fstr = new IO.FileStream (filename, IO.FileMode.Open)
+        use rd = new IO.StreamReader (fstr)
+        let prg = parse_from_TextReader rd filename Parser.program 
+        let t, v = interpret_expr prg
+        printfn "type:\t%s\nvalue:\t%s" (pretty_ty t) (pretty_value v)
 
 let main_interactive () =
+    printfn "entering interactive mode..."
+    let mutable tenv = []
+    let mutable venv = []
     while true do
-        try
+        trap <| fun () ->
             printf "\n> "
             stdout.Flush ()
-            let prg = parse_from_TextReader stdin "LINE" Parser.interactive
-            interpret_expr prg
-        with SyntaxError (msg, lexbuf) -> printfn "\nsyntax error: %s\nat token: %A\nlocation: %O" msg lexbuf.Lexeme lexbuf.EndPos
-           | TypeError msg             -> printfn "\ntype error: %s" msg
-           | UnexpectedError msg       -> printfn "\nunexpected error: %s" msg
+            let x, (t, v) =
+                match parse_from_TextReader stdin "LINE" Parser.interactive with 
+                | IExpr e -> "it", interpret_expr e
+                | IBinding (_, x, _, _ as b) -> x, interpret_expr (LetIn (b, Var x)) // TRICK: put the variable itself as body after the in
+            printfn "val %s : %s = %s" x (pretty_ty t) (pretty_value v)
+            // update global environments
+            tenv <- (x, t) :: tenv
+            venv <- (x, v) :: venv
+                
     
 [<EntryPoint>]
 let main argv =

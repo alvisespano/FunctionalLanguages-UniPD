@@ -39,8 +39,7 @@ let TyBool = TyName "bool"
 let TyUnit = TyName "unit"
 
 // active pattern for literal types
-let private (|TyLit|_|) name (t : ty) =
-    match t with
+let private (|TyLit|_|) name = function
     | TyName s when s = name -> Some ()
     | _ -> None
 
@@ -61,19 +60,27 @@ type lit = LInt of int
          | LBool of bool
          | LUnit 
 
-type expr = 
+type binding = bool * string * ty option * expr    // (is_recursive, id, optional_type_annotation, expression)
+
+and expr = 
     | Lit of lit
     | Lambda of string * ty option * expr
     | App of expr * expr
     | Var of string
-    | Let of string * expr * expr
-    | LetRec of string * ty option * expr * expr
+    | LetIn of binding * expr
     | IfThenElse of expr * expr * expr option
     | Tuple of expr list
     | BinOp of expr * string * expr
     | UnOp of string * expr
    
+let (|Let|_|) = function 
+    | LetIn ((false, x, tyo, e1), e2) -> Some (x, tyo, e1, e2)
+    | _ -> None
     
+let (|LetRec|_|) = function 
+    | LetIn ((true, x, tyo, e1), e2) -> Some (x, tyo, e1, e2)
+    | _ -> None
+
 type 'a env = (string * 'a) list  
 
 type value =
@@ -81,6 +88,11 @@ type value =
     | VTuple of value list
     | Closure of value env * string * expr
     | RecClosure of value env * string * string * expr
+
+type interactive = IExpr of expr | IBinding of binding
+
+// pretty printers
+//
 
 // utility function for printing lists by flattening strings with a separator 
 let rec flatten p sep es =
@@ -124,8 +136,11 @@ let rec pretty_expr e =
 
     | Var x -> x
 
-    | Let (x, e1, e2) ->
+    | Let (x, None, e1, e2) ->
         sprintf "let %s = %s in %s" x (pretty_expr e1) (pretty_expr e2)
+
+    | Let (x, Some t, e1, e2) ->
+        sprintf "let %s : %s = %s in %s" x (pretty_ty t) (pretty_expr e1) (pretty_expr e2)
 
     | LetRec (x, None, e1, e2) ->
         sprintf "let rec %s = %s in %s" x (pretty_expr e1) (pretty_expr e2)
@@ -145,7 +160,8 @@ let rec pretty_expr e =
     | BinOp (e1, op, e2) -> sprintf "%s %s %s" (pretty_expr e1) op (pretty_expr e2)
     
     | UnOp (op, e) -> sprintf "%s %s" op (pretty_expr e)
-        
+    
+    | _ -> unexpected_error "pretty_expr: %s" (pretty_expr e)
 
 let rec pretty_value v =
     match v with

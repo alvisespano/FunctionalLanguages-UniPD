@@ -6,8 +6,9 @@
 
 module FSharp.Common.Parsing
 
+#nowarn "52"
+
 open System
-open System.Text.RegularExpressions
 open FSharp.Text  // if removed, any project using types such as Position and LexBuffer will not compile because of name clashing with homonimous types defined elsewhere within F# libs
 
 let parse_float (s : string) = Double.Parse (s, Globalization.NumberStyles.Float, Globalization.CultureInfo.InvariantCulture)

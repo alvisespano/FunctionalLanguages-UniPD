@@ -37,8 +37,11 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
             else type_error "wrong application: argument type %s does not match function domain %s" (pretty_ty t2) (pretty_ty l)
         | _ -> type_error "expecting a function on left side of application, but got %s" (pretty_ty t1)
 
-    | Let (x, e1, e2) ->
+    | Let (x, tyo, e1, e2) ->
         let t1 = typecheck_expr env e1
+        match tyo with
+        | None -> ()
+        | Some t -> if t <> t1 then type_error "type annotation in let binding of %s is wrong: exptected %s, but got %s" x (pretty_ty t) (pretty_ty t1)
         typecheck_expr ((x, t1) :: env) e2
 
     | IfThenElse (e1, e2, e3o) ->
@@ -111,3 +114,4 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
 
     | UnOp (op, _) -> unexpected_error "typecheck_expr: unsupported unary operator (%s)" op
 
+    | _ -> unexpected_error "typecheck_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e
