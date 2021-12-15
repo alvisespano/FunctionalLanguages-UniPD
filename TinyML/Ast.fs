@@ -118,7 +118,7 @@ let pretty_lit lit =
     match lit with
     | LInt n -> sprintf "%d" n
     | LFloat n -> sprintf "%g" n
-    | LString s -> s
+    | LString s -> sprintf "\"%s\"" s
     | LChar c -> sprintf "%c" c
     | LBool true -> "true"
     | LBool false -> "false"
