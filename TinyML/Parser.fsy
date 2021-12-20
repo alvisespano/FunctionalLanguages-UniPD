@@ -101,6 +101,8 @@ expr_tuple_atom:
   | expr_tuple_atom AND expr_tuple_atom                     { BinOp ($1, "and", $3) }
   | expr_tuple_atom OR expr_tuple_atom				        { BinOp ($1, "or", $3) }
 
+  | IF expr THEN expr                                       { IfThenElse ($2, $4, None) }
+  | IF expr THEN expr ELSE expr                             { IfThenElse ($2, $4, Some $6) }
 
 expr_tuple_atoms:
     expr_tuple_atom                             { [$1] }
