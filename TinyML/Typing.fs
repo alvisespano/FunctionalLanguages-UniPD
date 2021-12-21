@@ -9,6 +9,37 @@ open Ast
 
 let type_error fmt = throw_formatted TypeError fmt
 
+type subst = (tyvar * ty) list
+
+// TODO implement this
+let unify (t1 : ty) (t2 : ty) : subst = []
+
+// TODO implement this
+let apply_subst (t : ty) (s : subst) : ty = t
+
+// TODO implement this
+let compose_subst (s1 : subst) (s2 : subst) : subst = s1 @ s2
+
+let rec freevars_ty (t : ty) : tyvar Set =
+    match t with
+    | TyName _ -> Set.empty
+    | TyArrow (t1, t2) -> Set.union (freevars_ty t1) (freevars_ty t2)
+    | TyVar tv -> Set.singleton tv
+    | TyTuple ts -> List.fold (fun set t -> Set.union set (freevars_ty t)) Set.empty ts 
+
+let freevars_scheme (Forall (tvs, t)) =
+    Set.difference (freevars_ty t) (Set.ofList tvs)
+
+// type inference
+//
+
+let rec typeinfer_expr (env : ty env) (e : expr) : ty * subst =
+    failwith "not implement"
+
+
+// type checker
+//
+    
 let rec typecheck_expr (env : ty env) (e : expr) : ty =
     match e with
     | Lit (LInt _) -> TyInt
