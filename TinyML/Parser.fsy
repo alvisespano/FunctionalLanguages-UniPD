@@ -57,9 +57,22 @@ expr:
 
 binding:
   | LET ID EQ expr                       { (false, $2, None, $4) }
+  | LET ID parms EQ expr                 { (false, $2, None, fold_params $3 $5) }
+  
   | LET ID COLON ty EQ expr              { (false, $2, Some $4, $6) }
+  | LET ID parms COLON ty EQ expr        { (false, $2, Some $5, fold_params $3 $7) }
+
   | LET REC ID EQ expr                   { (true, $3, None, $5) }
+  | LET REC ID parms EQ expr             { (true, $3, None, fold_params $4 $6 )}
+
+  | LET REC ID parms COLON ty EQ expr    { (true, $3, Some $6, fold_params $4 $8) }
   | LET REC ID COLON ty EQ expr          { (true, $3, Some $5, $7) }
+
+parms:
+    ID                            { [$1, None] }
+  | BRA ID COLON ty KET           { [$2, Some $4]}
+  | ID parms                      { ($1, None) :: $2 }
+  | BRA ID COLON ty KET parms     { ($2, Some $4) :: $6}
 
 expr_app_atom:
     INT                                 { Lit (LInt $1) }

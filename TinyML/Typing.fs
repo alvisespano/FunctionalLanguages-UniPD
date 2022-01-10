@@ -33,8 +33,24 @@ let freevars_scheme (Forall (tvs, t)) =
 // type inference
 //
 
+let gamma0 = [
+    ("+", TyArrow (TyInt, TyArrow (TyInt, TyInt)))
+    ("-", TyArrow (TyInt, TyArrow (TyInt, TyInt)))
+
+]
+
 let rec typeinfer_expr (env : ty env) (e : expr) : ty * subst =
-    failwith "not implement"
+    match e with
+    
+
+    | BinOp (e1, op, e2) ->
+        typeinfer_expr env (App (App (Var op, e1), e2))
+
+    | UnOp (op, e) ->
+        typeinfer_expr env (App (Var op, e))
+
+   
+    | _ -> failwith "not implemented"
 
 
 // type checker

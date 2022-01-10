@@ -5,6 +5,6 @@
 
 // line comment
 
-let f = fun (x : int) -> x + 1 in
-f 7
+let f = fun x -> fun y -> x - y
+
 
