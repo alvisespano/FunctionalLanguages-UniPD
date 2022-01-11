@@ -39,18 +39,9 @@ let gamma0 = [
 
 ]
 
-let rec typeinfer_expr (env : ty env) (e : expr) : ty * subst =
-    match e with
-    
-
-    | BinOp (e1, op, e2) ->
-        typeinfer_expr env (App (App (Var op, e1), e2))
-
-    | UnOp (op, e) ->
-        typeinfer_expr env (App (Var op, e))
-
-   
-    | _ -> failwith "not implemented"
+// TODO for exam
+let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
+    failwith "not implemented"
 
 
 // type checker

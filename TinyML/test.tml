@@ -5,6 +5,14 @@
 
 // line comment
 
-let f = fun x -> fun y -> x - y
+let f x y = (x, y) in
+let g x = f x x
+in ()
+
+
+let f = fun x -> (x + 1, if x then 1 else 2)
+
+
+
 
 
