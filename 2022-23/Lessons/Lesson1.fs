@@ -1,5 +1,9 @@
 ﻿
+module FL2022_23.Lesson1
 
+///////////////////////////////
+// bindings and values
+///////////////////////////////
 
 let k = 4
 
@@ -27,17 +31,6 @@ let app1 (f, x) = f (x + 1)
 
 
 
-
-
-
-//ArrayList<Integer> l = new ArrayList<Integer>();
-
-let l0 = [ (fun x -> x + 1); (fun x -> x * 2)]
-
-
-let l1 = [1; 5; 9; 10 + 3; 89]
-
-let l2 = [true; false; true && false || true]
 
 
 
