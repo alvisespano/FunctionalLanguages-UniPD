@@ -82,6 +82,7 @@ let pretty_print_color c =  // pretty_print_color : color -> string
 let str1 = pretty_print_color Red
 
 
+
 module Tree =
 
     type tree = Leaf of int | Node of tree * tree
@@ -107,7 +108,7 @@ module MyList =
     type 'a mylist = Empty | Cons of 'a * 'a mylist 
 
     let ll1 = Empty
-    let ll2 = Cons ("ciao", Cons ("sono", Cons (3, Empty)))
+    let ll2 = Cons ("ciao", Cons ("sono", Cons ("alvise", Empty)))
     let ll3 = Cons (true, Cons (true, Cons (false, Empty)))
 
 
