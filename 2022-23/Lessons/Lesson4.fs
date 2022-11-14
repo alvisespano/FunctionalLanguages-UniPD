@@ -75,3 +75,56 @@ module Sum =
     let ex4 = sum (fun a b -> a || b) false [true; false; true; false]
 
 
+module Iter =
+    
+    (*for (MyType x : e) {
+        // do something
+    }
+
+    List<Integer> l = new ArrayList<>();
+    for (Integer n : l) {
+        System.out.println(n);
+    }*)
+
+
+    (*void f(int x) {
+        x++;   
+    }*)
+
+
+    //type unit = ()
+
+    // iter : ('a -> unit) -> 'a list -> unit
+    let rec iter f l =
+       match l with 
+       | [] -> ()
+       | x :: xs -> f x; iter f xs
+
+    let () = iter (fun n -> printf "%d\n" n) [1 .. 20]
+
+    // r : unit list
+    let r = Map.map (fun n -> printf "%d\n" n) [1 .. 20]
+
+
+module Fold =
+    
+    let rec foldR f z l =
+        match l with
+        | [] -> z
+        | x :: xs -> f (foldR f z xs) x
+
+    let rec foldL f z l =
+        match l with
+        | [] -> z
+        | x :: xs -> foldL f (f z x) xs
+
+    let r1 = foldL (fun z x -> x + z) 0 [1 .. 20] 
+
+    let s1 = foldL (+) "" ["a"; "b"; "c"]   // "abc"
+    let s2 = foldR (+) "" ["a"; "b"; "c"]   // "cba"
+
+    let factorial n = foldL ( * ) 1 [1 .. n]
+
+
+
+
