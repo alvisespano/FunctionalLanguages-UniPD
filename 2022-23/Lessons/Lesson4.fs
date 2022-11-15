@@ -113,17 +113,96 @@ module Fold =
         | [] -> z
         | x :: xs -> f (foldR f z xs) x
 
+
+    // foldL : ('b -> 'a -> 'b) -> 'b -> 'a list -> 'b
     let rec foldL f z l =
         match l with
         | [] -> z
         | x :: xs -> foldL f (f z x) xs
 
+    // map : ('a -> 'b) -> 'a list -> 'b list
+    let map f l = foldR (fun l2 x -> l2 @ [f x]) [] l
+
+    // filter : ('a -> bool) -> 'a list -> 'a list
+    let filter p l = foldL (fun z x -> if p x then x :: z else z) [] l
+
+
+    // max_by : ('a -> 'a -> bool) -> 'a list -> 'a
+    let max_by cmp l = 
+        let rec aux m l =
+            match l with
+            | [] -> raise (Failure "message")
+        aux ...
+
+    let rec max_by cmp l =
+        match l with
+        | [] -> raise (Failure "message")
+        | [x] -> x
+        | x :: xs -> let m = max_by cmp xs in if cmp x m then m else x
+
+
+    type 'a option = None | Some of 'a
+
+    let max_by cmp l =
+        let f m x =
+            match m with
+            | None -> Some x
+            | Some y -> if cmp x y then Some y else Some x
+        foldL f None l
+
+
+
+
     let r1 = foldL (fun z x -> x + z) 0 [1 .. 20] 
+
+    let l2 = [1; 2; 3] @ [4; 5; 6]
 
     let s1 = foldL (+) "" ["a"; "b"; "c"]   // "abc"
     let s2 = foldR (+) "" ["a"; "b"; "c"]   // "cba"
 
     let factorial n = foldL ( * ) 1 [1 .. n]
+
+
+    (*
+    public static <A, B> List<B> map(Iterable<A> c, Function<A, B> f) {
+        List<B> out = new ArrayList<>();
+        for (A a : c)
+            out.add(f.apply(a));
+        return out;
+    }
+
+    template <class A, class B, class F>
+    vector<B> map(const vector<A>& v, const F& f) {
+        vector<B> r;
+        for (auto x : v)
+            r.push_back(f(x));
+        return r;
+    }
+    *)
+
+
+
+//// EXERCISE
+
+module Exercise1 =
+
+    type 'a tree = Leaf of 'a | Node of 'a tree * 'a tree
+
+    // define map, fold, sum, iter, filter etc for trees
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
