@@ -191,10 +191,36 @@ module Exercise1 =
     // define map, fold, sum, iter, filter etc for trees
 
 
+    // map_tree : ('a -> 'b) -> 'a tree -> 'b tree
+    let rec map_tree f =
+        let R = map_tree f   // m : 'a tree -> 'b tree
+        in fun t ->
+            match t with
+            | Leaf x ->
+                let z = Leaf (f x) in z
+
+            | Node (l, r) -> 
+                Node (R l, R r)
+
+    // sum_int_tree : int tree -> int
+    let rec sum_int_tree t =
+        match t with
+        | Leaf x -> x 
+        | Node (l, r) -> sum_int_tree l + sum_int_tree r 
+
+    // sum_tree : ('a -> 'a -> 'a) -> 'a tree -> 'a
+    let rec sum_tree (+) t =
+        match t with
+        | Leaf x -> x
+        | Node (l, r) -> (sum_tree (+) l) + (sum_tree (+) r) 
 
 
-
-
+    let tests () =
+        let N = Node
+        let L = Leaf
+        let t1 = N (N (L 1, L 2), L 3)
+        let mt1 = map_tree (fun x -> x >= 2) t1 
+        ()
 
 
 
