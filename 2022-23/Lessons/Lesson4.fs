@@ -127,13 +127,6 @@ module Fold =
     let filter p l = foldL (fun z x -> if p x then x :: z else z) [] l
 
 
-    // max_by : ('a -> 'a -> bool) -> 'a list -> 'a
-    let max_by cmp l = 
-        let rec aux m l =
-            match l with
-            | [] -> raise (Failure "message")
-        aux ...
-
     let rec max_by cmp l =
         match l with
         | [] -> raise (Failure "message")
@@ -143,7 +136,7 @@ module Fold =
 
     type 'a option = None | Some of 'a
 
-    let max_by cmp l =
+    let max_by_opt cmp l =
         let f m x =
             match m with
             | None -> Some x
@@ -182,13 +175,60 @@ module Fold =
 
 
 
-//// EXERCISE
+//// Trees
 
-module Exercise1 =
+module Tree =
 
-    type 'a tree = Leaf of 'a | Node of 'a tree * 'a tree
+    type 'a tree = 
+        | Leaf of 'a option
+        | Node of 'a tree * 'a tree
 
-    // define map, fold, sum, iter, filter etc for trees
+    
+    let rec pretty_tree t =
+        match t with
+        | Leaf None -> "."
+        | Leaf (Some x) -> sprintf "%O" x
+        | Node (t1, t2) -> sprintf "(%s %s)" (pretty_tree t1) (pretty_tree t2)
+
+
+    (*
+    // JAVA IMPLEMENTATION USING THE VISITOR PATTERN 
+
+    public abstract class Tree<T> {
+        public abstract <S> Tree<S> map(Function<T, S> f);
+    }
+
+    public class Leaf<T> extends Tree<T> {
+        @Nullable
+        private T data;
+
+        public Leaf(T data) {
+            this.data = data;
+        }
+
+        @Override
+        public <S> Tree<S> map(Function<T, S> f) {
+            return new Leaf<S>(data != null ? f.apply(this.data) : null);
+        }
+    }
+
+    public class Node<T> extends Tree<T> {
+        private Tree<T> left, right;
+
+        public Node(Tree<T> l, Tree<T> r) {
+            this.leaf = l;
+            this.right = r;
+        }
+
+        @Override
+        public <S> Tree<S> map(Function<T, S> f) {
+            return new Node<S>(left.map(f), right.map(f));
+        }
+
+    }
+    
+    *)
+
 
 
     // map_tree : ('a -> 'b) -> 'a tree -> 'b tree
@@ -196,7 +236,10 @@ module Exercise1 =
         let R = map_tree f   // m : 'a tree -> 'b tree
         in fun t ->
             match t with
-            | Leaf x ->
+            | Leaf None ->
+                Leaf None
+
+            | Leaf (Some x) ->
                 let z = Leaf (f x) in z
 
             | Node (l, r) -> 
@@ -205,21 +248,46 @@ module Exercise1 =
     // sum_int_tree : int tree -> int
     let rec sum_int_tree t =
         match t with
-        | Leaf x -> x 
+        | Leaf (Some x) -> x
+        | Leaf None -> 0
         | Node (l, r) -> sum_int_tree l + sum_int_tree r 
 
     // sum_tree : ('a -> 'a -> 'a) -> 'a tree -> 'a
-    let rec sum_tree (+) t =
+    let rec sum_tree (+) zero t =
         match t with
-        | Leaf x -> x
-        | Node (l, r) -> (sum_tree (+) l) + (sum_tree (+) r) 
+        | Leaf (Some x) -> x
+        | Leaf None -> zero
+        | Node (l, r) -> (sum_tree (+) zero l) + (sum_tree (+) zero r) 
+
+    // filter : ('a -> bool) -> 'a list -> 'a list
+    // filter_tree : ('a -> bool) -> 'a tree -> 'a tree
+    let rec filter_tree p t =
+        match t with
+        | Leaf (Some x) -> if p x then Leaf (Some x) else Leaf None
+        | Leaf None -> Leaf None
+        | Node (l, r) -> Node (filter_tree p l, filter_tree p r)
+
+    // foldL_tree : ('b -> 'a -> 'b) -> 'b -> 'a tree -> 'b
+    let rec fold_tree f z t =
+        match t with
+        | Leaf (Some x) -> f z x
+        | Leaf None     -> z
+        | Node (l, r)   -> let z' = fold_tree f z l in fold_tree f z' r
+
+    let sum_tree_by_folding f zero t = 
+        fold_tree f zero t
+
+
 
 
     let tests () =
         let N = Node
-        let L = Leaf
-        let t1 = N (N (L 1, L 2), L 3)
-        let mt1 = map_tree (fun x -> x >= 2) t1 
+        let L x = Leaf (Some x)
+        let t1 = N (N (L 1., L 2.), N (L 3., Leaf None))
+        let z1 = sum_tree ( ** ) 2. t1
+        let z2 = sum_tree_by_folding ( ** ) 2. t1
+
+//        let mt1 = map_tree (fun x -> x >= 2) t1 
         ()
 
 
