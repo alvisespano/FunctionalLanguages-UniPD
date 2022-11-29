@@ -279,16 +279,50 @@ module Tree =
 
 
 
-
     let tests () =
         let N = Node
         let L x = Leaf (Some x)
         let t1 = N (N (L 1., L 2.), N (L 3., Leaf None))
+        printfn "t1 = %s" (pretty_tree t1)
         let z1 = sum_tree ( ** ) 2. t1
         let z2 = sum_tree_by_folding ( ** ) 2. t1
 
 //        let mt1 = map_tree (fun x -> x >= 2) t1 
         ()
+
+
+
+module OtherTree =
+
+    type 'a tree = 
+        | Node of 'a option * 'a tree option * 'a tree option
+        
+    let Leaf x = Some (Node (Some x, None, None))
+
+    let SNode (x, t1, t2) = Some (Node (x, t1, t2))
+
+    let t1 = Node (Some 5, 
+                   SNode (Some 6, Leaf 1, Leaf 2), 
+                   SNode (Some 7, Leaf 3, Leaf 4)
+                   )
+
+    let pretty_opt f o =
+        match o with
+        | None -> "."
+        | Some x -> f x
+
+    let rec pretty_tree t =
+        match t with
+        | Node (xo, lo, ro) -> 
+            let x = pretty_opt (sprintf "%O") xo
+            let l = pretty_opt pretty_tree lo
+            let r = pretty_opt pretty_tree ro
+            sprintf "(%s %s %s)" l x r
+
+
+
+
+
 
 
 
