@@ -294,8 +294,7 @@ module Tree =
 
 module OtherTree =
 
-    type 'a tree = 
-        | Node of 'a option * 'a tree option * 'a tree option
+    type 'a tree = Node of 'a option * 'a tree option * 'a tree option
         
     let Leaf x = Some (Node (Some x, None, None))
 
@@ -319,6 +318,7 @@ module OtherTree =
             let r = pretty_opt pretty_tree ro
             sprintf "(%s %s %s)" l x r
 
+    // HOMEWORK: write map, filter, fold, sum for these trees
 
 
 
