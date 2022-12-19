@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TinyML", "TinyML.fsproj", "{2BD7C40F-1BA7-4282-864F-C3B685A22538}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Interactive|Any CPU = Debug Interactive|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release Interactive|Any CPU = Release Interactive|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug Interactive|Any CPU.ActiveCfg = Debug Interactive|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug Interactive|Any CPU.Build.0 = Debug Interactive|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Release Interactive|Any CPU.ActiveCfg = Release Interactive|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Release Interactive|Any CPU.Build.0 = Release Interactive|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD7C40F-1BA7-4282-864F-C3B685A22538}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A304300-0C2C-4B81-9B2A-60DFF7F39CA7}
+	EndGlobalSection
+EndGlobal

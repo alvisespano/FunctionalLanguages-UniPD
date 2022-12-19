@@ -30,6 +30,15 @@ module Tests =
     let k = 8
 
     let n = f 2
+     
+ 
+    let a = 7 in let b = a in b + 1
+
+
+    let rec f = fun x -> if x > 0 then f (x - 1) else 0 
+    in f 3
+
+
 
 
 
