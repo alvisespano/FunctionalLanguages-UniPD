@@ -51,7 +51,7 @@ let (|TyBool|_|) = (|TyLit|_|) "bool"
 let (|TyUnit|_|) = (|TyLit|_|) "unit"
 
 
-type scheme = Forall of tyvar list * ty
+type scheme = Forall of tyvar Set * ty
 
 type lit = LInt of int
          | LFloat of float
@@ -61,12 +61,6 @@ type lit = LInt of int
          | LUnit 
 
 type binding = bool * string * ty option * expr    // (is_recursive, id, optional_type_annotation, expression)
-
-
-
-//fun pippo -> pippo + 1
-
-
 
 
 and expr = 
