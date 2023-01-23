@@ -33,7 +33,7 @@ let freevars_scheme_env env =
     List.fold (fun r (_, sch) -> r + freevars_scheme sch) Set.empty env
 
 
-// type inference
+// basic environment: add builtin operators at will
 //
 
 let gamma0 = [
@@ -43,8 +43,7 @@ let gamma0 = [
 ]
 
 
-
-// TODO for exam
+// TODO continue implementing this
 let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
     match e with
     | Lit (LInt _) -> TyInt, [] 
@@ -62,6 +61,7 @@ let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
         t2, compose_subst s2 s1
 
     | _ -> failwithf "not implemented"
+
 
 // type checker
 //
