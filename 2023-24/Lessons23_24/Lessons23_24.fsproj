@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="currying.fs" />
+    <Compile Include="basics.fs" />
+    <Compile Include="C_grammar.txt" />
+  </ItemGroup>
+
+</Project>

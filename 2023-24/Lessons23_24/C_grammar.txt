@@ -1,0 +1,63 @@
+﻿
+
+
+constant ::= 0 | 1 | 2 | 3 | ...
+          |  'a' | 'b' | ...
+          |  1.0 | 2.45 | ...
+          |  "string..."
+
+block ::= statement ;
+       |  statement ; block
+
+cases :: = case constant: block
+       |   case constant: block cases
+
+statement ::= return expr
+           |  if (expr) { block }
+           |  if (expr) { block } else { block }
+           |  for (statement ; expr ; expr ) { block }
+           |  while (expr) { block }
+           |  do { block } while (expr)
+           |  switch (expr) { cases }
+           |  break
+           |  continue
+           |  goto x
+
+expr ::= constant
+      |  (expr)
+      |  x
+      |  expr++
+      |  ++expr
+      |  expr--
+      |  --expr
+      |  expr = expr
+      |  expr += expr
+      |  expr -= expr
+      |  ...
+      |  expr + expr
+      |  expr - expr
+      |  expr * expr 
+      |  expr / expr
+      |  expr % expr
+      |  expr << expr
+      |  expr >> expr 
+      |  expr & expr
+      |  expr | expr
+      |  expr ^ expr
+      |  ~ expr 
+      |  - expr
+      |  f(expr1, expr2, ..., exprN)
+      |  & expr
+      |  expr ? expr : expr
+      |  * expr
+      |  expr[expr]
+      |  ! expr
+      |  expr && expr
+      |  expr || expr
+      |  expr == expr
+      |  expr < expr
+      |  expr <= expr
+      |  expr > expr
+      |  expr >= expr
+      |  expr.x
+
