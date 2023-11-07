@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="lists.fs" />
+    <Compile Include="unions.fs" />
     <Compile Include="currying.fs" />
     <Compile Include="basics.fs" />
     <Compile Include="C_grammar.txt" />
