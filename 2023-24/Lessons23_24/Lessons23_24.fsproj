@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="trees.fs" />
     <Compile Include="lists.fs" />
     <Compile Include="unions.fs" />
     <Compile Include="currying.fs" />
