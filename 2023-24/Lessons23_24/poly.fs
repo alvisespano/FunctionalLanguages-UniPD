@@ -7,3 +7,35 @@ let test1 () =
 let test2 () =
     let id = fun x -> x
     (id 3, id true)
+
+
+let a =
+    let f = (fun x -> (let x = x in x)) in f    
+        
+let f = fun (x : 'a) -> fun (y : 'c -> 'c -> 'd) -> fun (z : 'c) -> 
+    let x = y
+    let y = let x = x in z
+    x y z
+
+let g =
+    let a = 8
+    fun x -> a 
+
+let g' = fun x ->
+    let a = 8
+    a 
+
+let h = fun x -> fun z ->
+    let f = fun y -> y + z
+    f 3 + x
+
+let rec map f =
+    let R l = map f l
+    fun l ->
+        match l with
+        | [] -> []
+        | h :: t -> f h :: R t
+
+
+
+
