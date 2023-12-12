@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="infer.fs" />
     <Compile Include="poly.fs" />
     <Compile Include="trees.fs" />
     <Compile Include="lists.fs" />

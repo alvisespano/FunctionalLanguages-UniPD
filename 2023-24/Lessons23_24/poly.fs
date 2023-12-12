@@ -37,5 +37,13 @@ let rec map f =
         | h :: t -> f h :: R t
 
 
+let rec list_length l =
+    match l with
+    | [] -> 0
+    | _ :: t -> 1 + list_length t
+
+
+
+
 
 
