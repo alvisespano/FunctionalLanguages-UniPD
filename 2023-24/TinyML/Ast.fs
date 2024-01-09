@@ -62,7 +62,6 @@ type lit = LInt of int
 
 type binding = bool * string * ty option * expr    // (is_recursive, id, optional_type_annotation, expression)
 
-
 and expr = 
     | Lit of lit
     | Lambda of string * ty option * expr
@@ -77,7 +76,9 @@ and expr =
 let fold_params parms e0 = 
     List.foldBack (fun (id, tyo) e -> Lambda (id, tyo, e)) parms e0
 
-
+let Let (x, tyo, e1, e2) = LetIn ((false, x, tyo, e1), e2)
+let LetRec (x, tyo, e1, e2) = LetIn ((true, x, tyo, e1), e2)
+   
 let (|Let|_|) = function 
     | LetIn ((false, x, tyo, e1), e2) -> Some (x, tyo, e1, e2)
     | _ -> None
@@ -136,7 +137,7 @@ let rec pretty_expr e =
     | Lambda (x, None, e) -> sprintf "fun %s -> %s" x (pretty_expr e)
     | Lambda (x, Some t, e) -> sprintf "fun (%s : %s) -> %s" x (pretty_ty t) (pretty_expr e)
     
-    // TODO pattern-match sub-application cases
+    // TODO write a better pretty-printer that puts brackets on non-trivial expressions appearing on the right side of an application
     | App (e1, e2) -> sprintf "%s %s" (pretty_expr e1) (pretty_expr e2)
 
     | Var x -> x
