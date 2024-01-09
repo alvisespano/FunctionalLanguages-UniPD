@@ -10,9 +10,22 @@ open Ast
 // evaluator
 //
 
-let rec eval_expr (env : value env) (e : expr) : value =
+let rec eval_expr (venv : value env) (e : expr) : value =
     match e with
     | Lit lit -> VLit lit
+
+    | Lambda (x, _, e) -> Closure (venv, x, e)
+
+    | App (e1, e2) -> 
+        let v1 = eval_expr venv e1
+        let v2 = eval_expr venv e2
+        match v1 with
+        | Closure (venv', x, e) ->
+            let venv' = (x, v2) :: venv'
+            eval_expr venv' e
+
+        | _ -> unexpected_error "non-closure on left hand of application"
+        
 
     // TODO complete this implementation
 

@@ -87,6 +87,10 @@ let (|LetRec|_|) = function
     | LetIn ((true, x, tyo, e1), e2) -> Some (x, tyo, e1, e2)
     | _ -> None
 
+
+// envs and values
+//
+
 type 'a env = (string * 'a) list  
 
 type value =
