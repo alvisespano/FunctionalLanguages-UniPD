@@ -55,7 +55,6 @@ let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
 
     | _ -> unexpected_error "typeinfer_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e
 
-
 // type checker
 //
 // optionally, a simple type checker (without type inference) could be implemented
@@ -69,6 +68,26 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
     | Lit (LChar _) -> TyChar
     | Lit (LBool _) -> TyBool
     | Lit LUnit -> TyUnit
+
+    | Let (x, None, e1, e2) ->
+        let t1 = typecheck_expr env e1
+        let env' = (x, t1) :: env
+        typecheck_expr env' e2
+
+    | Let (x, Some t, e1, e2) ->
+        let t1 = typecheck_expr env e1
+        if t <> t1 then type_error "type %O differs from type %O in let-binding" t1 t 
+        let env' = (x, t1) :: env
+        typecheck_expr env' e2
+
+    | Lambda (x, Some t, e) ->
+        let env' = (x, t) :: env
+        let te = typecheck_expr env' e
+        TyArrow (t, te)
+
+    | Lambda (x, None, e) ->
+        type_error "unannotated lambdas are not supported by the type checker"
+
 
     // TODO optionally complete this implementation
 

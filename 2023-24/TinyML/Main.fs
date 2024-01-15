@@ -15,7 +15,7 @@ let interpret_expr tenv venv e =
     #if DEBUG
     printfn "AST:\t%A\npretty:\t%s" e (pretty_expr e)
     #endif
-    let t = Typing.typecheck_expr tenv e
+    let t = Typing.typecheck_expr tenv e    // TODO you can invoke the typeinfer_expr here
     #if DEBUG
     printfn "type:\t%s" (pretty_ty t)
     #endif

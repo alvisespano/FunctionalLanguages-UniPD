@@ -7,6 +7,12 @@ module TinyML.Eval
 
 open Ast
 
+exception NotFound
+
+let lookup env x = 
+    let _, v = List.find (fun (x', v) -> x = x') env
+    v
+
 // evaluator
 //
 
@@ -25,7 +31,9 @@ let rec eval_expr (venv : value env) (e : expr) : value =
             eval_expr venv' e
 
         | _ -> unexpected_error "non-closure on left hand of application"
-        
+
+    | Var x -> lookup venv x
+    
 
     // TODO complete this implementation
 
