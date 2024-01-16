@@ -54,7 +54,7 @@ let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
     | Lit LUnit -> TyUnit, []
 
     | BinOp (e1, op, e2) ->
-        typeinfer_expr env (App (App (op, e1), e2)
+        typeinfer_expr env (App (App (Var op, e1), e2))
 
     // TODO complete this implementation
 
