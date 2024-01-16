@@ -36,7 +36,9 @@ let freevars_scheme_env env = Set.empty
 let gamma0 = [
     ("+", TyArrow (TyInt, TyArrow (TyInt, TyInt)))
     ("-", TyArrow (TyInt, TyArrow (TyInt, TyInt)))
-
+    ("*", TyArrow (TyInt, TyArrow (TyInt, TyInt)))
+    ("/", TyArrow (TyInt, TyArrow (TyInt, TyInt)))
+    ("<", TyArrow (TyInt, TyArrow (TyInt, TyBool)))
 ]
 
 // type inference
@@ -50,6 +52,9 @@ let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
     | Lit (LString _) -> TyString, []
     | Lit (LChar _) -> TyChar, [] 
     | Lit LUnit -> TyUnit, []
+
+    | BinOp (e1, op, e2) ->
+        typeinfer_expr env (App (App (op, e1), e2)
 
     // TODO complete this implementation
 
@@ -87,6 +92,56 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
 
     | Lambda (x, None, e) ->
         type_error "unannotated lambdas are not supported by the type checker"
+
+    | App (e1, e2) ->
+        let t2 = typecheck_expr env e2
+        match typecheck_expr env e1 with
+        | TyArrow (ta, tb) -> 
+            if ta <> t2 then type_error "argument has type %O while function parameter has type %O in application" t2 ta
+            tb
+        | t1 -> type_error "left hand of application is not an arrow type: %O" t1
+
+    | IfThenElse (e1, e2, Some e3) ->
+        let t1 = typecheck_expr env e1
+        if t1 <> TyBool then type_error "bool expected in if guard, but got %O" t1
+        let t2 = typecheck_expr env e2
+        let t3 = typecheck_expr env e3
+        if t2 <> t3 then type_error "then and else branches have different types: %O and %O" t2 t3
+        t2
+
+    | BinOp (e1, ("+" | "-" | "*" | "/" as op), e2) ->
+        let t1 = typecheck_expr env e1
+        if t1 <> TyInt then type_error "left hand of (%s) operator is not an int: %O" op t1
+        let t2 = typecheck_expr env e2
+        if t2 <> TyInt then type_error "right hand of (%s) operator is not an int: %O" op t2
+        TyInt
+
+    | UnOp ("not", e) ->
+        let t = typecheck_expr env e
+        if t <> TyBool then type_error "operand of not-operator is not a bool: %O" t
+        TyBool
+        
+    | BinOp (e1, "=", e2) ->
+        let t1 = typecheck_expr env e1
+        let t2 = typecheck_expr env e2
+        if t1 <> t2 then type_error "left and right hands of equality operator are different: %O and %O" t1 t2
+        TyBool
+
+    | BinOp (e1, ("<" | ">" | "<=" | ">=" as op), e2) ->
+        let t1 = typecheck_expr env e1
+        if t1 <> TyInt then type_error "left hand of (%s) operator is not an int: %O" op t1
+        let t2 = typecheck_expr env e2
+        if t2 <> TyInt then type_error "right hand of (%s) operator is not an int: %O" op t2
+        TyBool
+
+    | Tuple es -> TyTuple (List.map (typecheck_expr env) es)
+
+
+
+
+
+
+
 
 
     // TODO optionally complete this implementation
