@@ -81,7 +81,9 @@ type nonTerminalId =
     | NONTERM_interactive
     | NONTERM_expr
     | NONTERM_binding
-    | NONTERM_parms
+    | NONTERM_param
+    | NONTERM_params
+    | NONTERM_lit
     | NONTERM_expr_app_atom
     | NONTERM_expr_tuple_atom
     | NONTERM_expr_tuple_atoms

@@ -18,8 +18,7 @@ let throw_formatted exnf fmt = ksprintf (fun s -> raise (exnf s)) fmt
 
 let unexpected_error fmt = throw_formatted UnexpectedError fmt
 
-
-// AST type definitions
+// types
 //
 
 type tyvar = int
@@ -38,20 +37,10 @@ let TyString = TyName "string"
 let TyBool = TyName "bool"
 let TyUnit = TyName "unit"
 
-// active pattern for literal types
-let private (|TyLit|_|) name = function
-    | TyName s when s = name -> Some ()
-    | _ -> None
-
-let (|TyFloat|_|) = (|TyLit|_|) "float"
-let (|TyInt|_|) = (|TyLit|_|) "int"
-let (|TyChar|_|) = (|TyLit|_|) "char"
-let (|TyString|_|) = (|TyLit|_|) "string"
-let (|TyBool|_|) = (|TyLit|_|) "bool"
-let (|TyUnit|_|) = (|TyLit|_|) "unit"
-
-
 type scheme = Forall of tyvar Set * ty
+
+// literals
+//
 
 type lit = LInt of int
          | LFloat of float
@@ -59,6 +48,21 @@ type lit = LInt of int
          | LChar of char
          | LBool of bool
          | LUnit 
+
+let private (|TyLit|_|) name = function
+    | TyName s when s = name -> Some ()
+    | _ -> None
+
+// active patterns for literal types
+let (|TyFloat|_|) = (|TyLit|_|) "float"
+let (|TyInt|_|) = (|TyLit|_|) "int"
+let (|TyChar|_|) = (|TyLit|_|) "char"
+let (|TyString|_|) = (|TyLit|_|) "string"
+let (|TyBool|_|) = (|TyLit|_|) "bool"
+let (|TyUnit|_|) = (|TyLit|_|) "unit"
+
+// expressions
+//
 
 type binding = bool * string * ty option * expr    // (is_recursive, id, optional_type_annotation, expression)
 
@@ -73,12 +77,11 @@ and expr =
     | BinOp of expr * string * expr
     | UnOp of string * expr
 
-let fold_params parms e0 = 
-    List.foldBack (fun (id, tyo) e -> Lambda (id, tyo, e)) parms e0
-
+// pseudo constructors for let bindings
 let Let (x, tyo, e1, e2) = LetIn ((false, x, tyo, e1), e2)
 let LetRec (x, tyo, e1, e2) = LetIn ((true, x, tyo, e1), e2)
    
+// active patterns for let bindings
 let (|Let|_|) = function 
     | LetIn ((false, x, tyo, e1), e2) -> Some (x, tyo, e1, e2)
     | _ -> None
@@ -87,17 +90,26 @@ let (|LetRec|_|) = function
     | LetIn ((true, x, tyo, e1), e2) -> Some (x, tyo, e1, e2)
     | _ -> None
 
-
-// envs and values
+// environment
 //
 
 type 'a env = (string * 'a) list  
+
+let lookup env (x : string) = 
+    let _, v = List.find (fun (x', v) -> x = x') env
+    v
+
+// values
+//
 
 type value =
     | VLit of lit
     | VTuple of value list
     | Closure of value env * string * expr
     | RecClosure of value env * string * string * expr
+
+// others
+//
 
 type interactive = IExpr of expr | IBinding of binding
 
@@ -183,3 +195,13 @@ let rec pretty_value v =
     
     | RecClosure (env, f, x, e) -> sprintf "<|%s;%s;%s;%s|>" (pretty_env pretty_value env) f x (pretty_expr e)
     
+
+#nowarn "60"
+type ty with
+    override self.ToString () = pretty_ty self
+
+type expr with
+    override self.ToString () = pretty_expr self
+
+type value with
+    override self.ToString () = pretty_value self

@@ -7,12 +7,6 @@ module TinyML.Eval
 
 open Ast
 
-exception NotFound
-
-let lookup env x = 
-    let _, v = List.find (fun (x', v) -> x = x') env
-    v
-
 // evaluator
 //
 

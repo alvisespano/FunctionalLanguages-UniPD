@@ -20,6 +20,8 @@ let apply_subst (t : ty) (s : subst) : ty = t
 // TODO implement this
 let compose_subst (s1 : subst) (s2 : subst) : subst = s1 @ s2
 
+let ($) = compose_subst
+
 // TODO implement this
 let rec freevars_ty t = Set.empty
 
@@ -46,7 +48,7 @@ let gamma0 = [
 
 let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
     match e with
-    | Lit (LInt _) -> TyInt, [] 
+    | Lit (LInt _) -> TyInt, []
     | Lit (LBool _) -> TyBool, []
     | Lit (LFloat _) -> TyFloat, [] 
     | Lit (LString _) -> TyString, []
@@ -55,6 +57,17 @@ let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
 
     | BinOp (e1, op, e2) ->
         typeinfer_expr env (App (App (Var op, e1), e2))
+
+    | IfThenElse (e1, e2, Some e3) ->
+        // TODO optionally you can follow the original type inference rule and apply/compose substitutions incrementally (see Advanced Notes on ML, Table 4, page 5)
+        let t1, s1 = typeinfer_expr env e1
+        let s2 = unify t1 TyBool
+        let t2, s3 = typeinfer_expr env e2
+        let t3, s4 = typeinfer_expr env e3
+        let s5 = unify t2 t3
+        let s = s5 $ s4 $ s3 $ s2 $ s1
+        apply_subst t2 s, s
+
 
     // TODO complete this implementation
 
@@ -74,6 +87,8 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
     | Lit (LBool _) -> TyBool
     | Lit LUnit -> TyUnit
 
+    | Var x -> lookup env x
+
     | Let (x, None, e1, e2) ->
         let t1 = typecheck_expr env e1
         let env' = (x, t1) :: env
@@ -81,7 +96,7 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
 
     | Let (x, Some t, e1, e2) ->
         let t1 = typecheck_expr env e1
-        if t <> t1 then type_error "type %O differs from type %O in let-binding" t1 t 
+        if t <> t1 then type_error "type %O differs from type %O in let-binding" t1 t
         let env' = (x, t1) :: env
         typecheck_expr env' e2
 
@@ -135,13 +150,6 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
         TyBool
 
     | Tuple es -> TyTuple (List.map (typecheck_expr env) es)
-
-
-
-
-
-
-
 
 
     // TODO optionally complete this implementation

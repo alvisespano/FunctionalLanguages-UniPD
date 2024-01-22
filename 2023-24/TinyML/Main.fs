@@ -28,7 +28,7 @@ let interpret_expr tenv venv e =
 
 let trap f =
     try f ()
-    with SyntaxError (msg, lexbuf) -> printfn "\nsyntax error: %s\nat token: %A\nlocation: %O" msg lexbuf.Lexeme lexbuf.EndPos
+    with SyntaxError (msg, lexbuf) -> printfn "\nsyntax error: %s\nat token: \"%s\"\nlocation: %O" msg (Array.fold (sprintf "%s%c") "" lexbuf.Lexeme) lexbuf.EndPos
        | TypeError msg             -> printfn "\ntype error: %s" msg
        | UnexpectedError msg       -> printfn "\nunexpected error: %s" msg
 
