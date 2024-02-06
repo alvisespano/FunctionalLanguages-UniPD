@@ -59,7 +59,6 @@ let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
         typeinfer_expr env (App (App (Var op, e1), e2))
 
     | IfThenElse (e1, e2, Some e3) ->
-        // TODO optionally you can follow the original type inference rule and apply/compose substitutions incrementally (see Advanced Notes on ML, Table 4, page 5)
         let t1, s1 = typeinfer_expr env e1
         let s2 = unify t1 TyBool
         let t2, s3 = typeinfer_expr env e2
@@ -69,14 +68,14 @@ let rec typeinfer_expr (env : scheme env) (e : expr) : ty * subst =
         apply_subst t2 s, s
 
 
-    // TODO complete this implementation
+    // TODO complete the type inference
 
     | _ -> unexpected_error "typeinfer_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e
 
+
+
 // type checker
 //
-// optionally, a simple type checker (without type inference) could be implemented
-// you might start implementing this for simplicity and eventually write the type inference once you gain familiarity with the code
 
 let rec typecheck_expr (env : ty env) (e : expr) : ty =
     match e with
@@ -152,6 +151,6 @@ let rec typecheck_expr (env : ty env) (e : expr) : ty =
     | Tuple es -> TyTuple (List.map (typecheck_expr env) es)
 
 
-    // TODO optionally complete this implementation
+    // TODO you can complete the typechecker implementation with the missing expressions
 
     | _ -> unexpected_error "typecheck_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e

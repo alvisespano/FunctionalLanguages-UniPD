@@ -132,6 +132,7 @@ let pretty_tupled p l = flatten p ", " l
 let rec pretty_ty t =
     match t with
     | TyName s -> s
+    // TODO arrow types are not printed correctly: when the domain is an arrow you need to print parentheses around it
     | TyArrow (t1, t2) -> sprintf "%s -> %s" (pretty_ty t1) (pretty_ty t2)
     | TyVar n -> sprintf "'%d" n
     | TyTuple ts -> sprintf "(%s)" (pretty_tupled pretty_ty ts)
@@ -196,6 +197,7 @@ let rec pretty_value v =
     | RecClosure (env, f, x, e) -> sprintf "<|%s;%s;%s;%s|>" (pretty_env pretty_value env) f x (pretty_expr e)
     
 
+// for using the %O format specifier to print types, expressions and values, these object extensions define a ToString() method invoking the right pretty-printer
 #nowarn "60"
 type ty with
     override self.ToString () = pretty_ty self

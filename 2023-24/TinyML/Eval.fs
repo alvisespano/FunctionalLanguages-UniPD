@@ -29,6 +29,6 @@ let rec eval_expr (venv : value env) (e : expr) : value =
     | Var x -> lookup venv x
     
 
-    // TODO complete this implementation
+    // TODO complete the evaluator
 
     | _ -> unexpected_error "eval_expr: unsupported expression: %s [AST: %A]" (pretty_expr e) e
